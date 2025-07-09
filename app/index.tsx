@@ -1,11 +1,9 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { View } from "react-native";
 
-import Login from "./myComponents/Login"
-import Dashboard from "./myComponents/Dashboard"
+import Dashboard from "./myComponents/Dashboard";
+import Login from "./myComponents/Login";
 
 export const mycontext = createContext();
 
@@ -15,10 +13,6 @@ const index = () => {
     const [Psw, setPsw] = useState(null)
     const [AdgBaseURI, setAdgBaseURI] = useState(null);
 
-    useEffect(() => {
-        console.log("JEYU");
-
-    }, [Username])
 
     return (
         <View>
