@@ -16,58 +16,55 @@ import { default as GlobalStyle } from "../globalStyles/global.jsx";
 import { doRequest } from "../../utility";
 
 
-const Login = () => {
+const Login = (props) => {
     const [ShowPassword, setShowPassword] = useState(false);
     //
     const [Username, setUsername] = useState(null);
     const [Password, setPassword] = useState(null);
     const [AdgBaseURI, setAdgBaseURI] = useState(null);
-    const [AdgPORT, setAdgPORT] = useState(null);
     const [RememberMe, setRememberMe] = useState(false)
     ////
     const ctx = useContext(mycontext)
 
 
-    async function doLogin(usernameP = Username, passwordP = Password, adgURIP = AdgBaseURI, adgPORTP = AdgPORT, remember = RememberMe) {
+    async function doLogin(usernameP = Username, passwordP = Password, adgURIP = AdgBaseURI, remember = RememberMe) {
 
-        // if (usernameP?.length > 0 && passwordP?.length > 0 && adgURIP?.length > 0) {
-        console.log("eeeehh");
-        
-        doRequest(adgURIP, adgPORTP,"control/dns_info","GET",{
-            "Authorization":'Basic '+btoa(usernameP+":"+passwordP)
-        },null)
+        if (usernameP?.length > 0 && passwordP?.length > 0 && adgURIP?.length > 0) {
 
-        console.log(RememberMe);
-        // ctx.Username?.setUsername(Username);
-        // ctx.Password?.setPsw(Password);
-        // ctx.AdgBaseURI?.setAdgBaseURI(AdgBaseURI);
-
-        //then
-        if (RememberMe) {
-            let config = JSON.stringify({
-                "Username": usernameP,
-                "Password": passwordP,
+            let outcome = await doRequest({
+                "Authorization": 'Basic ' + btoa(usernameP + ":" + passwordP),
                 "AdgBaseURI": adgURIP,
-                "AdgPort": adgPORTP,
-                "Remember": remember
+                "Remember": remember,
+                "METHOD": "GET",
+                "PATH": "/control/querylog"
             })
-            await AsyncStorage.setItem('config', config);
+            if (outcome.status == 200) {
+                props?.setConfig({
+                    Username: usernameP,
+                    Auth: "Basic " + btoa(usernameP + ":" + passwordP),
+                    ADGURL: AdgBaseURI
+                })
+                if (RememberMe) {
+                    let config = JSON.stringify({
+                        "Username": usernameP,
+                        "Password": passwordP,
+                        "AdgBaseURI": adgURIP,
+                        "Remember": remember
+                    })
+                    await AsyncStorage.setItem('config', config);
+                }
+
+            }
         }
 
-        // }
     }
 
     async function checkStorage() {
         const conf = await AsyncStorage.getItem('config');
-        console.log(conf);
-
         if (conf != null) {
-            //dologin 
-            
-            JSON.parse(conf)
-
+            let x = JSON.parse(conf)
+            doLogin(x.Username, x.Password, x.AdgBaseURI, x.Remember)
         }
-
     }
 
     useEffect(() => {
@@ -75,20 +72,31 @@ const Login = () => {
     }, [])
 
     return (
-        <ThemedView style={{ width: 250, height: 300, margin: "auto" }}>
 
+        <ThemedView style={{ width: "50%", height: 300, margin: "auto", marginTop: "10px", }}>
+            <h2 style={{ textAlign: "center" }}>AdGuard Home ~ Remote </h2>
+            <br />
+            <br />
+            <br />
             <View>
-                <ThemedText> <h2> Username</h2> </ThemedText>
-                <TextInput placeholder="Username" onChangeText={(txt) => {
-                    setUsername(txt);
-                }} />
+                <ThemedText style={GlobalStyle.textLabel}>Username </ThemedText>
+                <ThemedView style={GlobalStyle.inlineContainer}>
+                    <TextInput placeholder="Username"
+                        style={GlobalStyle.textInput}
+                        onChangeText={(txt) => {
+                            setUsername(txt);
+                        }} />
+                </ThemedView>
             </View>
 
             <View >
-                <ThemedText> <h2> Password</h2> </ThemedText>
+                <ThemedText style={GlobalStyle.textLabel}>Password</ThemedText>
                 <ThemedView style={GlobalStyle.inlineContainer}>
-                    <TextInput placeholder="Password" secureTextEntry={!ShowPassword} textContentType="password" onChangeText={(txt) => { setPassword(txt) }} />
+                    <TextInput placeholder="Password" secureTextEntry={!ShowPassword} textContentType="password" onChangeText={(txt) => { setPassword(txt) }}
+                        style={GlobalStyle.textInput}
+                    />
                     <MaterialCommunityIcons
+                        style={GlobalStyle.peepPassword}
                         name={ShowPassword ? 'eye-off' : 'eye'}
                         size={24} color="#aaa" onPress={() => {
                             setShowPassword(!ShowPassword)
@@ -100,18 +108,20 @@ const Login = () => {
             <br />
             <br />
             <ThemedView >
-                <ThemedText><b>AdGuard URL</b></ThemedText>
+                <ThemedText style={GlobalStyle.textLabel}>AdGuard URL</ThemedText>
                 <ThemedView style={GlobalStyle.inlineContainer}>
 
-                    <TextInput placeholder="IP or machine name" onChangeText={(txt) => {
+                    <TextInput placeholder="http://name:port" onChangeText={(txt) => {
                         setAdgBaseURI(txt)
-                    }} />
+                    }}
+                        style={GlobalStyle.textInput}
+                    />
 
-                    <TextInput placeholder="Port" textContentType="number"
+                    {/* <TextInput placeholder="Port" textContentType="number"
                         style={{ width: "30%" }}
                         onChangeText={(txt) => {
                             setAdgPORT(txt)
-                        }} />
+                        }} /> */}
                 </ThemedView>
 
             </ThemedView>
@@ -120,6 +130,9 @@ const Login = () => {
             <br />
 
             <ThemedView style={GlobalStyle.inlineContainer}>
+                <ThemedText style={GlobalStyle.textLabel}>
+                    Remember me
+                </ThemedText>
                 <CheckBox
                     style={GlobalStyle.checkbox}
                     value={RememberMe}
@@ -129,17 +142,13 @@ const Login = () => {
 
                     }}
                 />
-                <ThemedText style={GlobalStyle.label}>
-                    Remember me
-                </ThemedText>
+
             </ThemedView>
 
             <Button onPressOut={() => {
-
                 doLogin(Username,
                     Password,
                     AdgBaseURI,
-                    AdgPORT,
                     RememberMe)
             }}> Login</Button>
         </ThemedView >

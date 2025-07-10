@@ -1,6 +1,5 @@
 import { ThemedView } from "@/components/ThemedView";
-import { createContext, useState } from "react";
-import { View } from "react-native";
+import { createContext, useRef, useState } from "react";
 
 import Dashboard from "./myComponents/Dashboard";
 import Login from "./myComponents/Login";
@@ -10,29 +9,33 @@ export const mycontext = createContext();
 const index = () => {
 
     const [Username, setUsername] = useState(null)
-    const [Psw, setPsw] = useState(null)
+    const [Auth, setAuth] = useState(null)
     const [AdgBaseURI, setAdgBaseURI] = useState(null);
+
+    const refLogin = useRef();
 
 
     return (
-        <View>
-            <ThemedView>
-                <mycontext.Provider value={{
-                    "Username": { Username, setUsername },
-                    "Psw": { Psw, setPsw },
-                    "AdgBaseURI": { AdgBaseURI, setAdgBaseURI },
-                    // "showMessage": (msg, esito) => showMessage(msg, esito),
-                }}>
-                    {
-                        (Username == null) ?
-                            <Login />
-                            :
-                            <Dashboard />
-                    }
-                </mycontext.Provider>
-            </ThemedView>
+        <ThemedView style={{ width: "100%", height: "100%" }}>
+            <mycontext.Provider value={{
+                "Username": { Username, setUsername },
+                "Psw": { Auth, setAuth },
+                "AdgBaseURI": { AdgBaseURI, setAdgBaseURI },
+                // "showMessage": (msg, esito) => showMessage(msg, esito),
+            }}>
+                {
+                    (Username == null) ?
+                        <Login ref={refLogin} setConfig={(obj) => {
+                            setUsername(obj.Username)
+                            setAuth(obj.Auth)
+                            setAdgBaseURI(obj.ADGURL)
+                        }} />
+                        :
+                        <Dashboard />
+                }
+            </mycontext.Provider>
+        </ThemedView>
 
-        </View>
     )
 }
 
