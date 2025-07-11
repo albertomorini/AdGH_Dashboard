@@ -11,6 +11,7 @@ const GlobalStyle = {
     inlineContainer: {
         flexDirection: 'row',
         marginBottom: 20,
+        width: "100%"
     },
     checkbox: {
         alignSelf: 'center',
@@ -39,6 +40,14 @@ const GlobalStyle = {
         fontSize: '18px',
         marginLeft: "-15px",
         fontWeight: 'bold'
+    },
+    navbar: {
+        margin: 25,
+        width:"200px",
+        borderRadius:"45px",
+        height:"35px",
+        padding: 20,
+        backgroundColor:"grey",
     }
 
 }

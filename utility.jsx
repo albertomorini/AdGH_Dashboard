@@ -4,7 +4,7 @@ export const doRequest = ( body) => {
 
 
 
-    return fetch("http://127.0.0.1:55441/rrequest", {
+    return fetch("http://10.0.0.3:55441/rrequest", {
         method: "POST",
         mode: "cors",
         body:JSON.stringify(body)

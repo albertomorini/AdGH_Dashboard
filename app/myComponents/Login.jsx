@@ -133,6 +133,8 @@ const Login = (props) => {
                 <ThemedText style={GlobalStyle.textLabel}>
                     Remember me
                 </ThemedText>
+              
+                
                 <CheckBox
                     style={GlobalStyle.checkbox}
                     value={RememberMe}
