@@ -1,13 +1,13 @@
 
 
-export const doRequest = ( body) => {
+export const doRequest = (body) => {
 
 
 
     return fetch("http://10.0.0.3:55441/rrequest", {
         method: "POST",
         mode: "cors",
-        body:JSON.stringify(body)
+        body: JSON.stringify(body)
     })
 
     // console.log(headers);

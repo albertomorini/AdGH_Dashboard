@@ -1,42 +1,43 @@
-import { ThemedView } from "@/components/ThemedView";
+import '@expo/metro-runtime';
+import * as React from 'react';
+import { View } from 'react-native';
+
 import { createContext, useRef, useState } from "react";
 
-import Dashboard from "./myComponents/Dashboard";
-import Login from "./myComponents/Login";
+import Login from "./myPages/Login"
 
 export const mycontext = createContext();
 
-const index = () => {
+export default function Screen() {
+  const [Username, setUsername] = React.useState(null)
+  const [Auth, setAuth] = useState(null)
+  const [AdgBaseURI, setAdgBaseURI] = React.useState(null);
 
-    const [Username, setUsername] = useState(null)
-    const [Auth, setAuth] = useState(null)
-    const [AdgBaseURI, setAdgBaseURI] = useState(null);
-
-    const refLogin = useRef();
+  const refLogin = useRef();
 
 
-    return (
-        <ThemedView style={{ width: "100%", height: "100%" }}>
-            <mycontext.Provider value={{
-                "Username": { Username, setUsername },
-                "Psw": { Auth, setAuth },
-                "AdgBaseURI": { AdgBaseURI, setAdgBaseURI },
-                // "showMessage": (msg, esito) => showMessage(msg, esito),
-            }}>
-                {
-                    (Username == null) ?
-                        <Login ref={refLogin} setConfig={(obj) => {
-                            setUsername(obj.Username)
-                            setAuth(obj.Auth)
-                            setAdgBaseURI(obj.ADGURL)
-                        }} />
-                        :
-                        <Dashboard />
-                }
-            </mycontext.Provider>
-        </ThemedView>
+  return (
+    <View className='flex-1 justify-center items-center gap-5 p-6 bg-secondary/30'
+    >
 
-    )
+      <mycontext.Provider value={{
+        "Username": { Username, setUsername },
+        "Psw": { Auth, setAuth },
+        "AdgBaseURI": { AdgBaseURI, setAdgBaseURI },
+        // "showMessage": (msg, esito) => showMessage(msg, esito),
+      }}>
+        {
+          (Username == null) ?
+            <Login ref={refLogin} setConfig={(obj) => {
+              setUsername(obj.Username)
+              setAuth(obj.Auth)
+              setAdgBaseURI(obj.ADGURL)
+            }} />
+            :
+            <Dashboard />
+        }
+      </mycontext.Provider>
+
+    </View>
+  );
 }
-
-export default index;
